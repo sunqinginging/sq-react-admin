@@ -5,15 +5,16 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "prepare": "husky",
     "format": "prettier --write \"src/**/*.{js,ts,tsx}\""
   },
   "dependencies": {
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1"
+    "antd": "^5.27.6",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
     "@commitlint/cli": "^20.1.0",
@@ -22,6 +23,7 @@
     "@types/node": "^24.6.0",
     "@types/react": "^19.1.16",
     "@types/react-dom": "^19.1.9",
+    "@unocss/transformer-directives": "^66.5.4",
     "@vitejs/plugin-react": "^5.0.4",
     "eslint": "^9.36.0",
     "eslint-config-prettier": "^10.1.8",
@@ -34,12 +36,13 @@
     "prettier": "^3.6.2",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.45.0",
+    "unocss": "^66.5.4",
     "vite": "^7.1.7"
   },
   "lint-staged": {
     "src/**/*.{js,ts,tsx}": [
       "npx eslint --fix",
-      "npx prettier --write"
+      "npm run format"
     ]
   }
 }

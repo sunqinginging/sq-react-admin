@@ -1,32 +1,41 @@
-import { useState } from 'react';
-import reactLogo from './assets/react.svg';
-import viteLogo from '/vite.svg';
 import './App.css';
+import { ConfigProvider, Button } from 'antd';
+import { useTheme } from './hooks/useTheme';
 
 function App() {
-	const [count, setCount] = useState(0);
+	const { algorithm, toggleTheme, isDark } = useTheme();
+
+	const root = document.documentElement;
+	const cs = getComputedStyle(root);
+	const primary =
+		(cs.getPropertyValue('--color-primary') || '').trim() || '#1677ff';
+	const bg =
+		(cs.getPropertyValue('--color-background') || '').trim() ||
+		(isDark ? '#141414' : '#ffffff');
+	const text =
+		(cs.getPropertyValue('--color-text') || '').trim() ||
+		(isDark ? '#f5f5f5' : '#111827');
+
 	return (
 		<>
-			<div>
-				<a href="https://vite.dev" target="_blank">
-					<img src={viteLogo} className="logo" alt="Vite logo" />
-				</a>
-				<a href="https://react.dev" target="_blank">
-					<img src={reactLogo} className="logo react" alt="React logo" />
-				</a>
-			</div>
-			<h1>Vite + React</h1>
-			<div className="card">
-				<button onClick={() => setCount((count) => count + 1)}>
-					count is {count}
-				</button>
-				<p>
-					Edit <code>src/App.tsx</code> and save to test HMR
-				</p>
-			</div>
-			<p className="read-the-docs">
-				Click on the Vite and React logos to learn more
-			</p>
+			<ConfigProvider
+				theme={{
+					algorithm,
+					token: {
+						colorPrimary: primary,
+						colorBgBase: bg,
+						colorTextBase: text,
+					},
+				}}
+			>
+				<div className="text-[var(--color-primary)]" justify="center">
+					当前模式: {isDark ? '暗黑' : '明亮'}
+				</div>
+				<Button type="primary" onClick={toggleTheme}>
+					切换暗黑模式
+				</Button>
+				<Button>我是按钮</Button>
+			</ConfigProvider>
 		</>
 	);
 }
