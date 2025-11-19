@@ -1,40 +1,29 @@
 import { Switch, ColorPicker } from 'antd';
 import { useThemeStore } from '../store/theme';
 import type { ColorPickerProps, GetProp } from 'antd';
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 
 type Color = GetProp<ColorPickerProps, 'value'>;
 export const ThemeSwitcher = () => {
 	const { mode, primary, setMode, setPrimary } = useThemeStore();
 	const [color, setColor] = useState<Color>(primary);
-
-	const hexString = useMemo<string>(
-		() => (typeof color === 'string' ? color : color?.toHexString()),
-		[color]
-	);
-
-	const handleThemeChange = (value) => {
+	// (value: Color, css: string) => void
+	const handleThemeChange = (value: Color, css: string) => {
 		setColor(value);
-		setPrimary(hexString);
+		setPrimary(css);
 	};
 	return (
-		<div flex="~ col gap3" p4 border="~ base rounded-lg" shadow="md">
-			<div flex="~ gap2 items-center">
-				<span>🌗 暗黑模式：</span>
-				<Switch
-					checked={mode === 'dark'}
-					onChange={(checked) => setMode(checked ? 'dark' : 'light')}
-				/>
-			</div>
+		<div>
+			<Switch
+				checked={mode === 'dark'}
+				onChange={(checked) => setMode(checked ? 'dark' : 'light')}
+			/>
 
-			<div flex="~ gap2 items-center">
-				<span>🎨 主题色：</span>
-				<ColorPicker
-					format="hex"
-					value={color}
-					onChange={(value) => handleThemeChange(value)}
-				/>
-			</div>
+			<ColorPicker
+				format="hex"
+				value={color}
+				onChange={(value, css) => handleThemeChange(value, css)}
+			/>
 		</div>
 	);
 };

@@ -6,7 +6,7 @@ import {
 	transformerDirectives,
 	transformerAttributifyJsx,
 } from 'unocss';
-// import transformerDirectives from '@unocss/transformer-directives';
+
 export default defineConfig({
 	presets: [
 		presetMini({
@@ -20,9 +20,7 @@ export default defineConfig({
 			colors: {
 				// 修改/扩展 preset 已经识别的颜色 key
 				// 不会自动生成 任意自定义颜色类 需要手动写 rules 或 shortcuts
-				primary: 'var(--color-primary)',
-				background: 'var(--color-background)',
-				text: 'var(--color-text)',
+				// primary: 'var(--color-primary)', // 这种写法text-primary不会生效
 			},
 			// 定义字号类型 {lg: '20px'} text-lg -> font-size: 20px
 			fontSize: {
@@ -30,7 +28,7 @@ export default defineConfig({
 				lg: '20px',
 			},
 			// 定义间距值，影响 p-*, m-*, gap-*
-			// rem基于 HTML 根元素的font-size计算的
+			// rem基于 HTML 根元素的font-size计算的16px
 			spacing: {
 				1: '0.25rem',
 				2: '0.5rem',
@@ -39,28 +37,21 @@ export default defineConfig({
 		},
 	},
 	// 快捷类名别名
-	shortcuts: {
-		'text-primary': 'text-[var(--color-primary)]',
-		'bg-background': 'bg-[var(--color-background)]',
-		'text-text': 'text-[var(--color-text)]',
-	},
+	shortcuts: [
+		// 自定义text-primary在快捷类名下声明也可以
+		// 'text-primary': 'text-[var(--color-primary)]',
+		{
+			'flex-center': 'flex flex-justify-center flex-items-center',
+		},
+	],
 	// 自定义新的原子规则
 	rules: [
-		// [/^m-(\d+)$/, ([, d]) => ({ margin: `${d}px` })],
-		[
-			'content-center',
-			{ 'justify-content': 'center', 'align-items': 'center' },
-		],
 		// [/^text-(\w+)$/, ([, c]) => ({ color: `var(--color-${c})` })],
 		// [/^bg-(\w+)$/, ([, c]) => ({ 'background-color': `var(--color-${c})` })],
 		// 上面的通用规则会与unocss预设的比如text-red类似产生冲突和覆盖
 		// [
 		// 	/^text-(primary|background|text)$/,
 		// 	([, c]) => ({ color: `var(--color-${c})` }),
-		// ],
-		// [
-		// 	/^bg-(primary|background|text)$/,
-		// 	([, c]) => ({ 'background-color': `var(--color-${c})` }),
 		// ],
 		[
 			/^text-primary(?:-(\w+))?$/,
@@ -75,8 +66,6 @@ export default defineConfig({
 				return { color };
 			},
 		],
-
-		// bg-primary / bg-primary-hover / bg-primary-disabled 等同理
 		[
 			/^bg-primary(?:-(\w+))?$/,
 			([, variant]) => {
@@ -93,25 +82,18 @@ export default defineConfig({
 	],
 	// 全局样式注入
 	// 共享色彩定义 UnoCSS 与 Antd token 统一颜色
+	// 没使用主题色切换的时候，可以通过维护明亮模式跟暗黑模式下的css变量 从而实现两个模式下是同一套css变量
 	preflights: [
 		{
 			layer: 'default',
 			getCSS: () => `
         :root {
           --color-primary-light: #3bf664;
-          --color-background-light: #ffffff;
-          --color-text-light: #111827;
           --color-primary: var(--color-primary-light);
-          --color-background: var(--color-background-light);
-          --color-text: var(--color-text-light);
         }
         .dark {
           --color-primary-dark: #60a5fa;
-          --color-background-dark: #111827;
-          --color-text-dark: #f9fafb;
           --color-primary: var(--color-primary-dark);
-          --color-background: var(--color-background-dark);
-          --color-text: var(--color-text-dark);
         }
       `,
 		},
@@ -127,8 +109,6 @@ export default defineConfig({
 	// 比如动态生成的class、text-primary类似于这种在源码中不会直接出现 编译阶段无法被扫描到所以不会被生成
 	// 需要告诉unocss不管有没有使用 都帮我预先生成这些类
 	safelist: [
-		// 'text-primary',
-		// 'bg-primary',
 		// (context) => {
 		// 	const theme = context?.theme as { colors?: Record<string, any> };
 		// 	const colorKeys = theme?.colors ? Object.keys(theme.colors) : ['primary'];

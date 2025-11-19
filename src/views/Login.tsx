@@ -1,13 +1,13 @@
-import { useState } from 'react';
+// import { useAuthStore } from '@/store/auth';
+import { Button } from 'antd';
 
 export default function Login() {
-	console.log('login render');
-	const [num, setNum] = useState(1);
+	const handleClick = () => {};
 
 	return (
 		<div>
 			login
-			<div onClick={() => setNum(num + 1)}>{num}</div>
+			<Button onClick={handleClick}>登录</Button>
 		</div>
 	);
 }

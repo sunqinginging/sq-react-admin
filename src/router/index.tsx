@@ -1,53 +1,30 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom';
-import type { RouteObjectWithMeta } from '@/types/router';
-import { lazy, Suspense } from 'react';
-// import PrivateRoute from './PrivateRoute';
-import Layout from '@/layout/index';
+import { flattenRoutes, wrapWithKeepAlive } from './utils';
+import BasicLayout from '@/layout';
+import Login from '@/views/Login';
+import NotFound from '@/views/NotFound';
 
-const User = lazy(() => import('@/views/User'));
-const Login = lazy(() => import('@/views/Login'));
-const Welcome = lazy(() => import('@/views/Welcome'));
+export function createDynamicRouter(menus: any[]) {
+	// 多级菜单树形结构拍平
+	const flatRoutes = flattenRoutes(menus);
 
-const routes: RouteObjectWithMeta[] = [
-	{
-		path: '/',
-		element: <Navigate to="/welcome"></Navigate>,
-	},
-	{
-		path: '/login',
-		element: (
-			<Suspense fallback={<div>Loading...</div>}>
-				<Login></Login>
-			</Suspense>
-		),
-		handle: {
-			title: '登录',
-			keepAlive: true,
+	return createBrowserRouter([
+		{
+			path: '/',
+			element: <BasicLayout></BasicLayout>,
+			children: [...flatRoutes],
 		},
-	},
-	{
-		element: <Layout />,
-		children: [
-			{
-				path: '/user',
-				element: (
-					<Suspense fallback={<div>Loading....</div>}>
-						<User></User>
-					</Suspense>
-				),
-			},
-			{
-				path: '/welcome',
-				element: (
-					<Suspense fallback={<div>Loading...</div>}>
-						<Welcome />
-					</Suspense>
-				),
-			},
-		],
-	},
-];
-
-const router = createBrowserRouter(routes);
-
-export default router;
+		{
+			path: '/login',
+			element: <Login></Login>,
+		},
+		{
+			path: '/404',
+			element: <NotFound></NotFound>,
+		},
+		{
+			path: '*',
+			element: <NotFound></NotFound>,
+		},
+	]);
+}

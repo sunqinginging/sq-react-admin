@@ -6,6 +6,7 @@ export const showLoading = () => {
 	if (count == 0) {
 		const loading = document.createElement('div');
 		loading.setAttribute('id', 'loading');
+		document.body.appendChild(loading);
 		createRoot(loading).render(<Loading></Loading>);
 	}
 	count++;
