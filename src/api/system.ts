@@ -7,3 +7,7 @@ export const login = (data: any) => {
 export const getMenuList = () => {
 	return http.get<IMenuItem[]>('/user/menus');
 };
+
+export const getOptionsList = () => {
+	return http.get<any[]>('/test/selectOptions');
+};

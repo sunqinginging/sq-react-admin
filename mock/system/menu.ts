@@ -17,6 +17,27 @@ export default [
 		},
 	},
 	{
+		url: '/api/test/selectOptions',
+		method: 'get',
+		timeout: 1200,
+		response: () => {
+			return {
+				code: 200,
+				message: '获取成功',
+				data: [
+					{
+						value: 'a',
+						label: '选项a',
+					},
+					{
+						value: 'b',
+						label: '选项b',
+					},
+				],
+			};
+		},
+	},
+	{
 		url: '/api/user/menus',
 		method: 'get',
 		response: () => {

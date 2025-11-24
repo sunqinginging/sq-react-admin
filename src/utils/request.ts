@@ -45,19 +45,44 @@ instance.interceptors.response.use(
 	}
 );
 
+function createCancelRequest<T>(
+	request: Promise<T>,
+	controller: AbortController
+): PromiseWithCancel<T> {
+	(request as any).cancel = () => controller.abort();
+	return request as PromiseWithCancel<T>;
+}
+
+type PromiseWithCancel<T> = Promise<T> & { cancel: () => void };
+
 export default {
 	get<T>(
 		url: string,
 		params?: object,
 		options = { showLoading: true, showError: true }
-	): Promise<T> {
-		return instance.get(url, { params, ...options });
+	): PromiseWithCancel<T> {
+		const controller = new AbortController();
+
+		const request: Promise<T> = instance.get(url, {
+			params,
+			...options,
+			signal: controller.signal,
+		});
+
+		return createCancelRequest<T>(request, controller);
 	},
-	post(
+	post<T>(
 		url: string,
 		data: object,
 		options = { showLoading: true, showError: true }
-	) {
-		return instance.post(url, data, options);
+	): PromiseWithCancel<T> {
+		const controller = new AbortController();
+
+		const requet: Promise<T> = instance.post(url, data, {
+			...options,
+			signal: controller.signal,
+		});
+
+		return createCancelRequest<T>(requet, controller);
 	},
 };
