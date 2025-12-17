@@ -79,6 +79,8 @@ export default defineConfig({
 				return { 'background-color': color };
 			},
 		],
+		['text-regular', { color: 'var(--color-text-regular)' }],
+		['bg-regular', { background: 'var(--color-bg-regular)' }],
 	],
 	// 全局样式注入
 	// 共享色彩定义 UnoCSS 与 Antd token 统一颜色
@@ -90,10 +92,6 @@ export default defineConfig({
         :root {
           --color-primary-light: #3bf664;
           --color-primary: var(--color-primary-light);
-        }
-        .dark {
-          --color-primary-dark: #60a5fa;
-          --color-primary: var(--color-primary-dark);
         }
       `,
 		},
@@ -108,6 +106,8 @@ export default defineConfig({
 	// unocss按需生成 只会生成在源码中真实出现的类
 	// 比如动态生成的class、text-primary类似于这种在源码中不会直接出现 编译阶段无法被扫描到所以不会被生成
 	// 需要告诉unocss不管有没有使用 都帮我预先生成这些类
+	// 不需要声明class 是写死在 JSX / TSX 里的
+	// <div className={`text-primary-${state}`} /> 只有在动态class的时候需要在safelist声明
 	safelist: [
 		// (context) => {
 		// 	const theme = context?.theme as { colors?: Record<string, any> };
@@ -126,5 +126,6 @@ export default defineConfig({
 		'bg-primary-hover',
 		'bg-primary-active',
 		'bg-primary-disabled',
+		'text-regular',
 	],
 });

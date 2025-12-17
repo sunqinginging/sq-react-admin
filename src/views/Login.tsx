@@ -71,6 +71,12 @@ export default function Login() {
 			// 	},
 			// ],
 		},
+		{
+			name: 'birth',
+			type: 'datetime',
+			required: true,
+			label: '出生年月',
+		},
 	];
 
 	const handleFormSubmit = (values: any) => {
@@ -84,7 +90,7 @@ export default function Login() {
 			<CustomForm
 				schema={schema}
 				onFinish={handleFormSubmit}
-				initialValues={{ sex: 'a', password: 'aaa' }}
+				initialValues={{ sex: 'a', password: 'aaa', birth: '2020-02-02' }}
 			></CustomForm>
 		</div>
 	);

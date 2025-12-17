@@ -17,6 +17,29 @@ export const useThemeStore = create(
 				const root = document.documentElement;
 				const isDark = mode === 'dark';
 				root.classList.toggle('dark', isDark);
+				if (isDark) {
+					root.style.setProperty('--color-text-regular', '#f0f0f0');
+					root.style.setProperty('--color-bg-regular', '#141414');
+				} else {
+					root.style.setProperty('--color-text-regular', '#1f1f1f');
+					root.style.setProperty('--color-bg-regular', '#FAFAFA');
+				}
+				const primaryColor = get().primary;
+				const colors = generate(primaryColor, { theme: 'default' });
+				if (isDark) {
+					// 暗黑模式比明亮模式低一个色阶
+					root.style.setProperty('--color-primary', colors[4]);
+					root.style.setProperty('--color-primary-hover', colors[3]);
+					root.style.setProperty('--color-primary-active', colors[5]);
+					// 8 位 Hex 颜色格式结构 第七第八位表示透明度 66表示40%不透明
+					root.style.setProperty('--color-primary-disabled', `${colors[5]}66`);
+				} else {
+					root.style.setProperty('--color-primary', colors[5]);
+					root.style.setProperty('--color-primary-hover', colors[4]);
+					root.style.setProperty('--color-primary-active', colors[6]);
+					// 8 位 Hex 颜色格式结构 第七第八位表示透明度 80表示50%不透明
+					root.style.setProperty('--color-primary-disabled', `${colors[5]}80`);
+				}
 				set({ mode });
 			},
 			setPrimary: (color) => {

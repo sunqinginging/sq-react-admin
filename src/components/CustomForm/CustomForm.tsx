@@ -7,17 +7,17 @@ import {
 	type FormRule,
 	type SelectProps,
 } from 'antd';
-import {
-	memo,
-	useCallback,
-	useEffect,
-	useMemo,
-	useState,
-	useRef,
-	type ReactNode,
-} from 'react';
+import CustomPicker from './CustomPicker';
+import { useEffect, useMemo, useState, useRef, type ReactNode } from 'react';
 import type React from 'react';
-export type FormItemType = 'input' | 'textarea' | 'select' | 'custom';
+export type FormItemType =
+	| 'input'
+	| 'textarea'
+	| 'select'
+	| 'custom'
+	| 'date'
+	| 'time'
+	| 'datetime';
 export type Option = { label: string; value: any };
 
 type FieldName = string | number | (string | number)[];
@@ -212,6 +212,9 @@ const RenderFormItem: React.FC<{
 			break;
 		case 'textarea':
 			Comp = <Input.TextArea {...commonProps} />;
+			break;
+		case 'datetime':
+			Comp = <CustomPicker></CustomPicker>;
 			break;
 	}
 

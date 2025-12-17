@@ -9,6 +9,7 @@ import { useAuthStore } from './store/auth';
 import { createDynamicRouter } from './router';
 import { RouterProvider } from 'react-router-dom';
 import { AliveScope } from 'react-activation';
+import { PageLoading } from './utils/loading/loading';
 
 function App() {
 	const { mode, primary } = useThemeStore();
@@ -30,7 +31,7 @@ function App() {
 	}, [menus]);
 
 	if (!router) {
-		return <div>loading</div>;
+		return <PageLoading></PageLoading>;
 	}
 	const root = document.documentElement;
 	// 获取 包含所有层级（内联、CSS、继承）后的真实值
@@ -58,6 +59,8 @@ function App() {
 							itemHoverBg: colorHover,
 							itemSelectedBg: colorActive,
 							itemSelectedColor: '#FAFAFA',
+							itemBg: mode === 'dark' ? '#141414' : '#FAFAFA',
+							itemColor: mode === 'dark' ? '#f0f0f0' : '#1f1f1f',
 						},
 						Layout: {
 							// #001529

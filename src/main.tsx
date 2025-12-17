@@ -5,7 +5,10 @@ import 'uno.css';
 import './index.css';
 import App from './App.tsx';
 import { useThemeStore } from './store/theme.ts';
+import dayjs from 'dayjs';
+import 'dayjs/locale/zh-cn';
 
+dayjs.locale('zh-cn');
 const { primary, setPrimary } = useThemeStore.getState();
 
 // 同步初始化主题 生成主题色对应的css变量

@@ -10,7 +10,9 @@ import { useMatches, Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { ThemeSwitcher } from '@/components/ThemeSwitcher';
 import SiderMenu from './components/SiderMneu';
-
+import TagsView from './components/TagsView';
+import { useTabsListener } from '@/hooks/useTabsListener';
+import { ContextMenuProvider } from '@/components/ContextMenu/ContextMenuProvider';
 function GlobalBreadcrumb() {
 	const matches = useMatches();
 	const crumbs = matches
@@ -29,6 +31,8 @@ function GlobalBreadcrumb() {
 }
 
 const App: React.FC = () => {
+	useTabsListener();
+
 	const [collapsed, setCollapsed] = useState(false);
 
 	const contentStyle: CSSProperties = {
@@ -45,40 +49,43 @@ const App: React.FC = () => {
 	};
 
 	return (
-		<Layout style={{ width: '100%', height: '100%' }}>
-			<Sider trigger={null} collapsible collapsed={collapsed}>
-				<SiderMenu></SiderMenu>
-			</Sider>
-			<Layout style={{ height: '100%', overflow: 'hidden' }}>
-				<Header style={headerStyle}>
-					<div className="flex-center">
-						<Button
-							type="text"
-							icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-							onClick={() => setCollapsed(!collapsed)}
-							style={{
-								fontSize: '16px',
-								width: 64,
-								height: 64,
-							}}
-						/>
-						<GlobalBreadcrumb></GlobalBreadcrumb>
-					</div>
-					<ThemeSwitcher></ThemeSwitcher>
-				</Header>
-				<Content style={contentStyle}>
-					<motion.div
-						key={location.pathname}
-						initial={{ opacity: 0, x: 30 }}
-						animate={{ opacity: 1, x: 0 }}
-						exit={{ opacity: 0, x: -30 }}
-						transition={{ duration: 0.25 }}
-					>
-						<Outlet />
-					</motion.div>
-				</Content>
+		<ContextMenuProvider>
+			<Layout style={{ width: '100%', height: '100%' }}>
+				<Sider trigger={null} collapsible collapsed={collapsed}>
+					<SiderMenu></SiderMenu>
+				</Sider>
+				<Layout style={{ height: '100%', overflow: 'hidden' }}>
+					<Header style={headerStyle}>
+						<div className="flex-center">
+							<Button
+								type="text"
+								icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+								onClick={() => setCollapsed(!collapsed)}
+								style={{
+									fontSize: '16px',
+									width: 64,
+									height: 64,
+								}}
+							/>
+							<GlobalBreadcrumb></GlobalBreadcrumb>
+						</div>
+						<ThemeSwitcher></ThemeSwitcher>
+					</Header>
+					<TagsView></TagsView>
+					<Content style={contentStyle}>
+						<motion.div
+							key={location.pathname}
+							initial={{ opacity: 0, x: 30 }}
+							animate={{ opacity: 1, x: 0 }}
+							exit={{ opacity: 0, x: -30 }}
+							transition={{ duration: 0.25 }}
+						>
+							<Outlet />
+						</motion.div>
+					</Content>
+				</Layout>
 			</Layout>
-		</Layout>
+		</ContextMenuProvider>
 	);
 };
 

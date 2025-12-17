@@ -7,6 +7,7 @@ import NotFound from '@/views/NotFound';
 import { ErrorBoundary } from 'react-error-boundary';
 import Fallback from '@/components/ErrorFallback';
 import { Suspense } from 'react';
+import { PageLoading } from '@/utils/loading/loading';
 
 export interface IMenuItem {
 	path: string;
@@ -14,12 +15,18 @@ export interface IMenuItem {
 	type: 'dir' | 'page' | 'button';
 	children?: IMenuItem[];
 	meta?: AppRouteHandle;
+	buttons?: IMenuBtn[];
+}
+
+export interface IMenuBtn {
+	code: string;
+	name: string;
 }
 
 export interface AppRouteHandle {
 	title?: string;
 	icon?: string | React.ReactNode;
-	isAuth?: boolean;
+	isPublic?: boolean;
 	keepAlive?: boolean;
 	[key: string]: any;
 }
@@ -152,22 +159,22 @@ export function getComponent(menu: IMenuItem): ReactNode {
 // KeepAlive和权限
 export function wrapWithKeepAlive(route: IMenuItem, Element: ReactNode) {
 	const { token } = useAuthStore.getState();
-	if (route.meta?.isAuth && !token) {
-		return <Navigate to="/404" replace></Navigate>;
+	if (!route.meta?.isPublic && !token) {
+		return <Navigate to="/login" replace></Navigate>;
 	}
 
 	if (route.meta?.keepAlive) {
 		return (
 			<KeepAlive name={route.path}>
 				<ErrorBoundary FallbackComponent={Fallback}>
-					<Suspense fallback={<div>Loading...</div>}> {Element}</Suspense>
+					<Suspense fallback={<PageLoading></PageLoading>}> {Element}</Suspense>
 				</ErrorBoundary>
 			</KeepAlive>
 		);
 	}
 	return (
 		<ErrorBoundary FallbackComponent={Fallback}>
-			<Suspense fallback={<div>Loading...</div>}> {Element}</Suspense>
+			<Suspense fallback={<PageLoading></PageLoading>}> {Element}</Suspense>
 		</ErrorBoundary>
 	);
 }

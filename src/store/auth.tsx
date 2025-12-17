@@ -11,7 +11,7 @@ interface AuthState {
 }
 
 export const useAuthStore = create<AuthState>((set, get) => ({
-	token: '',
+	token: 'ccccc',
 	menus: [],
 	router: null,
 	getMenus: async () => {

@@ -50,6 +50,16 @@ export default [
 						type: 'page',
 						component: 'Dashboard',
 						meta: { icon: 'DashboardOutlined', keepAlive: true },
+						buttons: [
+							{
+								code: 'add',
+								name: '新增',
+							},
+							{
+								code: 'export',
+								name: '导出',
+							},
+						],
 					},
 					{
 						path: '/system',
@@ -62,6 +72,16 @@ export default [
 								type: 'page',
 								component: 'System/User',
 								meta: { keepAlive: true },
+								buttons: [
+									{
+										code: 'add',
+										name: '新增',
+									},
+									{
+										code: 'export',
+										name: '导出',
+									},
+								],
 							},
 							{
 								path: '/system/role',

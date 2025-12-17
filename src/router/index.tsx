@@ -1,5 +1,5 @@
-import { createBrowserRouter, Navigate } from 'react-router-dom';
-import { flattenRoutes, wrapWithKeepAlive } from './utils';
+import { createBrowserRouter } from 'react-router-dom';
+import { flattenRoutes } from './utils';
 import BasicLayout from '@/layout';
 import Login from '@/views/Login';
 import NotFound from '@/views/NotFound';
