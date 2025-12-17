@@ -4,8 +4,22 @@ import CustomForm, {
 	type FieldSchema,
 } from '@/components/CustomForm/CustomForm';
 import { getOptionsList } from '@/api/system';
+import { useSearchParams } from 'react-router-dom';
+import { useAuthStore } from '@/store/auth';
+
 export default function Login() {
-	const handleClick = () => {};
+	const [searchParams] = useSearchParams();
+	const redirect = searchParams.get('redirect');
+	const { setToken } = useAuthStore();
+	const handleClick = async () => {
+		// 1.登录成功 设置store的token
+		setToken('hahahah123456');
+		// // 2.获取菜单权限
+		// await getMenus();
+		// // 3.跳转回登录前的页面
+		// navigate(redirect || '/dashboard', { replace: true });
+		window.location.href = redirect || '/dashboard';
+	};
 	const schema: FieldSchema[] = [
 		{
 			name: 'userName',
@@ -31,10 +45,13 @@ export default function Login() {
 			type: 'input',
 			required: true,
 			// 字段级联动 可以去修改其他字段等
-			onChange: (form, updateFormSchema, registry) => {
-				console.log('怎么没用啊');
-				form.setFieldValue('sex', undefined);
-				registry.sex.refreshOptions();
+			// onChange: (form, updateFormSchema, registry) => {
+			// 	console.log('怎么没用啊');
+			// 	// form.setFieldValue('sex', undefined);
+			// 	registry.sex.refreshOptions();
+			// },
+			onBlur: (e) => {
+				console.log('?????');
 			},
 		},
 		{

@@ -21,7 +21,7 @@ export function ContextMenu() {
 				left: safeX,
 				minWidth: width,
 			}}
-			className="fixed z-10000 bg-regular rounded-[6px] shadow-[0_6px_16px_rgba(0,0,0,0.12)] p-1 box-border"
+			className="fixed z-10000 bg-regular text-regular rounded-[6px] shadow-[0_6px_16px_rgba(0,0,0,0.12)] p-1 box-border"
 		>
 			{menus.map((item) => (
 				<div

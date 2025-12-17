@@ -2,6 +2,7 @@ import type { IResult } from '@/types/api';
 import axios from 'axios';
 import { hideLoading, showLoading } from './loading/index';
 import { message } from './AntdGlobal';
+import { useAuthStore } from '@/store/auth';
 const instance = axios.create({
 	baseURL: '/api',
 	timeout: 10000,
@@ -10,9 +11,9 @@ const instance = axios.create({
 
 instance.interceptors.request.use(
 	(config) => {
-		const token = 'xxx';
+		const token = useAuthStore.getState().token;
 		if (token) {
-			config.headers.Authorization = `Bear ${token}`;
+			config.headers.Authorization = `Bearer ${token}`;
 		}
 		if (config.showLoading) {
 			showLoading();
@@ -32,6 +33,10 @@ instance.interceptors.response.use(
 			hideLoading();
 		}
 		const data: IResult = response.data;
+		if (data.code == 401) {
+			window.location.href = '/login';
+			return Promise.reject(data);
+		}
 		if (data.code == 200) {
 			return Promise.resolve(data.data);
 		} else {

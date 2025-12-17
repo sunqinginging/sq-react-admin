@@ -7,18 +7,44 @@ import { useThemeStore } from './store/theme';
 import { ThemeSwitcher } from './components/ThemeSwitcher';
 import { useAuthStore } from './store/auth';
 import { createDynamicRouter } from './router';
-import { RouterProvider } from 'react-router-dom';
+import {
+	createBrowserRouter,
+	RouterProvider,
+	Navigate,
+} from 'react-router-dom';
 import { AliveScope } from 'react-activation';
 import { PageLoading } from './utils/loading/loading';
+import { staticRoutes } from '@/router/index';
 
 function App() {
 	const { mode, primary } = useThemeStore();
-	const { menus, getMenus, setRouter, router } = useAuthStore();
+	const { menus, getMenus, setRouter, router, token } = useAuthStore();
 
+	const currentPath = window.location.pathname;
 	// 应用首次加载时 请求菜单数据
 	useEffect(() => {
 		(async () => {
-			await getMenus();
+			if (!token) {
+				const resultRouters = createBrowserRouter([
+					...staticRoutes,
+					{
+						path: '/',
+						element: <Navigate to="/login" replace></Navigate>,
+					},
+					{
+						path: '*',
+						element: (
+							<Navigate
+								to={`/login?redirect=${encodeURIComponent(currentPath)}`}
+								replace
+							></Navigate>
+						),
+					},
+				]);
+				setRouter(resultRouters);
+			} else {
+				await getMenus();
+			}
 		})();
 	}, []);
 

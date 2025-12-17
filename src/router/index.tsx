@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router-dom';
+import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { flattenRoutes } from './utils';
 import BasicLayout from '@/layout';
 import Login from '@/views/Login';
@@ -12,7 +12,13 @@ export function createDynamicRouter(menus: any[]) {
 		{
 			path: '/',
 			element: <BasicLayout></BasicLayout>,
-			children: [...flatRoutes],
+			children: [
+				{
+					index: true, // 默认子路由
+					element: <Navigate to="/dashboard" replace />,
+				},
+				...flatRoutes,
+			],
 		},
 		{
 			path: '/login',
@@ -28,3 +34,10 @@ export function createDynamicRouter(menus: any[]) {
 		},
 	]);
 }
+
+export const staticRoutes = [
+	{
+		path: '/login',
+		element: <Login></Login>,
+	},
+];

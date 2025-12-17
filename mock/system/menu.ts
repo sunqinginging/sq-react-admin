@@ -40,7 +40,18 @@ export default [
 	{
 		url: '/api/user/menus',
 		method: 'get',
-		response: () => {
+		response: (req: any) => {
+			const auth = req.headers?.authorization;
+			console.log(req);
+			const token = auth?.replace(/^Bearer\s+/i, '');
+			console.log(token);
+			if (!token) {
+				return {
+					code: 401,
+					message: '请先登录',
+				};
+			}
+
 			return {
 				code: 200,
 				data: [

@@ -43,6 +43,7 @@ export type FieldSchema = {
 		updateFormSchema: IUpdateFormSchema,
 		registry: IRegistry
 	) => void;
+	onBlur?: (e: any) => void;
 };
 
 export interface ICustomFormProps {
@@ -52,7 +53,7 @@ export interface ICustomFormProps {
 }
 
 type IUpdateFormSchema = (name: string, config: Partial<FieldSchema>) => void;
-type IRegistry = Record<string, any>;
+type IRegistry = Record<string | number, any>;
 function omit(obj: Record<string, any>, keysToRemove: string[]) {
 	return Object.fromEntries(
 		Object.entries(obj).filter(([key]) => !keysToRemove.includes(key))
@@ -77,7 +78,6 @@ export default function CustomForm({
 			.map((item) => item.name);
 
 		if (initialValues) {
-			console.log(omit(initialValues, excludeList as string[]));
 			form.setFieldsValue(omit(initialValues, excludeList as string[]));
 		}
 	});
@@ -173,7 +173,7 @@ const RenderFormItem: React.FC<{
 	form: FormInstance;
 	registry: Record<string, any>;
 }> = ({ item, form, registry }) => {
-	const { name, label, type, props } = item;
+	const { name, label, type, props, onBlur } = item;
 	// 组装校验规则
 	const formItemRules = useMemo(() => {
 		const list: FormRule[] = [];
@@ -186,6 +186,7 @@ const RenderFormItem: React.FC<{
 		return list;
 	}, [item.required, item.label, item.rules]);
 	// 设置placeholder、disabled等
+	console.log(props);
 	const commonProps = {
 		placeholder: item.placeholder,
 		disabled:
@@ -208,7 +209,7 @@ const RenderFormItem: React.FC<{
 	let Comp: ReactNode;
 	switch (type) {
 		case 'input':
-			Comp = <Input {...commonProps}></Input>;
+			Comp = <Input {...commonProps} onBlur={() => onBlur()}></Input>;
 			break;
 		case 'textarea':
 			Comp = <Input.TextArea {...commonProps} />;
@@ -233,7 +234,6 @@ const SelectWidget: React.FC<{
 }> = ({ props, item, form, registry }) => {
 	const [options, setOptions] = useState<Option[]>([]);
 	const [loading, setLoading] = useState<boolean>(false);
-	console.log('select重新执行了');
 	const formItemRules = useMemo(() => {
 		const list: FormRule[] = [];
 		if (item.required) {
@@ -245,7 +245,6 @@ const SelectWidget: React.FC<{
 		return list;
 	}, [item.required, item.label, item.rules]);
 	const loadOptions = async () => {
-		console.log('什么样啊');
 		const values = form.getFieldsValue(true);
 		const { computedOptions, asyncOptions, options } = item;
 
@@ -278,7 +277,7 @@ const SelectWidget: React.FC<{
 	}, [props, loading]);
 
 	useEffect(() => {
-		registry[item.name] = {
+		registry[item.name as string] = {
 			refreshOptions: loadOptions,
 		};
 		loadOptions();

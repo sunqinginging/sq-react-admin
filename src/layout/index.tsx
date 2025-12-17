@@ -1,7 +1,7 @@
-import React, { useMemo, useState, type CSSProperties } from 'react';
+import React, { useState, type CSSProperties } from 'react';
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
-import { Button, Layout, Menu, theme } from 'antd';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Button, Layout } from 'antd';
+import { Outlet } from 'react-router-dom';
 import type { AppRouteHandle } from '@/router/utils';
 const { Header, Sider, Content } = Layout;
 
@@ -11,7 +11,6 @@ import { motion } from 'motion/react';
 import { ThemeSwitcher } from '@/components/ThemeSwitcher';
 import SiderMenu from './components/SiderMneu';
 import TagsView from './components/TagsView';
-import { useTabsListener } from '@/hooks/useTabsListener';
 import { ContextMenuProvider } from '@/components/ContextMenu/ContextMenuProvider';
 function GlobalBreadcrumb() {
 	const matches = useMatches();
@@ -31,7 +30,7 @@ function GlobalBreadcrumb() {
 }
 
 const App: React.FC = () => {
-	useTabsListener();
+	// useTabsListener();
 
 	const [collapsed, setCollapsed] = useState(false);
 

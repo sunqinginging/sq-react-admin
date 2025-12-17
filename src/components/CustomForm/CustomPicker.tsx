@@ -46,7 +46,7 @@ const CustomPicker: React.FC<ICustomPickerProps> = ({
 	}
 	return (
 		<DatePicker
-			showtime={type === 'datetime'}
+			showTime={type === 'datetime'}
 			value={initValue}
 			format={formatType}
 			onChange={handleChange}

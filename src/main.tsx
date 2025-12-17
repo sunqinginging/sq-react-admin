@@ -9,10 +9,11 @@ import dayjs from 'dayjs';
 import 'dayjs/locale/zh-cn';
 
 dayjs.locale('zh-cn');
-const { primary, setPrimary } = useThemeStore.getState();
+const { primary, setPrimary, mode, setMode } = useThemeStore.getState();
 
 // 同步初始化主题 生成主题色对应的css变量
 setPrimary(primary);
+setMode(mode);
 
 createRoot(document.getElementById('root')!).render(
 	// <StrictMode>
