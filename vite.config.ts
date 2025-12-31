@@ -3,12 +3,13 @@ import react from '@vitejs/plugin-react';
 import UnoCSS from 'unocss/vite';
 import path from 'path';
 import { viteMockServe } from 'vite-plugin-mock';
-
+import svgr from 'vite-plugin-svgr';
 // https://vite.dev/config/
 export default defineConfig(({ command }) => ({
 	plugins: [
 		UnoCSS(),
 		react(),
+		svgr(),
 		viteMockServe({
 			mockPath: 'mock',
 			enable: command === 'serve', // 开发环境启用

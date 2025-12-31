@@ -4,13 +4,14 @@ import CustomForm, {
 	type FieldSchema,
 } from '@/components/CustomForm/CustomForm';
 import { getOptionsList } from '@/api/system';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuthStore } from '@/store/auth';
 
 export default function Login() {
 	const [searchParams] = useSearchParams();
 	const redirect = searchParams.get('redirect');
-	const { setToken } = useAuthStore();
+	const { setToken, getMenus } = useAuthStore();
+	const navigate = useNavigate();
 	const handleClick = async () => {
 		// 1.登录成功 设置store的token
 		setToken('hahahah123456');

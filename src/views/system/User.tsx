@@ -1,6 +1,7 @@
 import { Button, Input } from 'antd';
 import { useState } from 'react';
 export default function User() {
+	console.log('render 用户');
 	const [num, setNum] = useState(1);
 	const handleAdd = () => {
 		setNum(num + 1);

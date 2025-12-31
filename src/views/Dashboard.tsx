@@ -1,3 +1,256 @@
+import {
+	Button,
+	Table,
+	type TableColumnsType,
+	type TableProps,
+	Tooltip,
+} from 'antd';
+import { createStyles } from 'antd-style';
+import type React from 'react';
+import { useEffect, useState } from 'react';
+import { useTableScrollbarStyle } from '@/hooks/useTableScrollbarStyle';
+import {
+	getColumnsTotalWidth,
+	getScrollBarSize,
+	normalizeColumns,
+} from '@/components/CustomTable/untils';
+import { useTableContainerWidth } from '@/components/CustomTable/useTableContainerWidth';
+import { useUserList } from '@/queryHooks/useUser';
+import { getUserList } from '@/api/user';
+
+export interface DataType {
+	key: React.Key;
+	name: string;
+	age: number;
+	email: string;
+	createTime: string;
+	isTotal?: boolean;
+}
+
+const columns: TableColumnsType<DataType> = [
+	{
+		title: '姓名',
+		dataIndex: 'name',
+		width: 120,
+		ellipsis: {
+			showTitle: false,
+		},
+		// render: (value, record) =>
+		// 	record.isTotal ? (
+		// 		<span>总计</span>
+		// 	) : (
+		// 		<Tooltip placement="topLeft" title={value}>
+		// 			{value}
+		// 		</Tooltip>
+		// 	),
+		// onCell: (record) => {
+		// 	if (record.isTotal) {
+		// 		return {
+		// 			colSpan: 2,
+		// 		};
+		// 	}
+		// 	return {};
+		// },
+	},
+	{
+		title: '邮箱',
+		dataIndex: 'email',
+		width: 200,
+		// render: (value) => value,
+		// onCell: (record) => {
+		// 	if (record.isTotal) {
+		// 		return {
+		// 			colSpan: 0,
+		// 		};
+		// 	}
+		// 	return {};
+		// },
+	},
+	{
+		title: '年龄',
+		dataIndex: 'age',
+		width: 300,
+		// render: (value, record) => {
+		// 	return (
+		// 		<span style={{ fontWeight: record.isTotal ? 600 : 400 }}>{value}</span>
+		// 	);
+		// },
+	},
+	{
+		title: '创建日期',
+		dataIndex: 'createTime',
+		width: 300,
+		// render: (value, record) => {
+		// 	return (
+		// 		<span style={{ fontWeight: record.isTotal ? 600 : 400 }}>{value}</span>
+		// 	);
+		// },
+	},
+	{
+		title: '操作',
+		key: 'operate',
+		fixed: 'right',
+		width: 150,
+		render: () => <span>操作</span>,
+	},
+];
+
+const data: DataType[] = [
+	{
+		key: '1',
+		name: '名字超级长不够放得下呜呜呜呜名字超级长不够放得下呜呜呜呜名字超级长不够放得下呜呜呜呜名字超级长不够放得下呜呜呜呜',
+		age: 20,
+		address: '地球',
+	},
+	{
+		key: '2',
+		name: 'wang',
+		age: 25,
+		address: '地球',
+	},
+	{
+		key: '3',
+		name: 'bbb',
+		age: 125,
+		address: '地球',
+	},
+	{
+		key: '4',
+		name: 'xxs',
+		age: 66,
+		address: '地球',
+	},
+	{
+		key: '5',
+		name: 'super man',
+		age: 2222,
+		address: '地球',
+	},
+];
+// 表格行rowSpan/列colSpan合并
+// 哪个单元格显示 哪个单元格就负责span，被合并掉的单元格必须返回colSpan: 0或rowSpan: 0
+
+const totalRow = {
+	key: 'total',
+	isTotal: true,
+	name: '总计',
+	address: '',
+	age: data.reduce((sum, i) => sum + i.age, 0),
+};
+
+const dataSource = [...data, totalRow];
+
+const useStyle = createStyles(({ css, token, prefixCls }) => {
+	const antCls = `.${prefixCls}`;
+
+	return {
+		customTable: css`
+			${antCls}-table {
+				${antCls}-table-container {
+					${antCls}-table-body,
+					${antCls}-table-content {
+						scrollbar-width: thin;
+						scrollbar-color: #eaeaea transparent;
+						scrollbar-gutter: stable;
+
+						&::-webkit-scrollbar {
+							width: 6px;
+							height: 6px;
+						}
+
+						&::-webkit-scrollbar-thumb {
+							background-color: #eaeaea;
+							border-radius: 4px;
+						}
+					}
+				}
+			}
+		`,
+	};
+});
+
 export default function DashBoard() {
-	return <div>DashBoard</div>;
+	const { styles } = useTableScrollbarStyle();
+	console.log(getScrollBarSize());
+
+	const { ref, width: tableWidth } = useTableContainerWidth();
+	const resColumns = normalizeColumns(columns);
+	const totalWidth = getColumnsTotalWidth(resColumns);
+	const scrollX = totalWidth > tableWidth ? tableWidth + 36 : undefined;
+
+	const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+	const selectedRow = (record: DataType) => {
+		const selectList = [...selectedRowKeys];
+		const idx = selectList.indexOf(record.key);
+		if (idx >= 0) {
+			selectList.splice(idx, 1);
+		} else {
+			selectList.push(record.key);
+		}
+		setSelectedRowKeys(selectList);
+	};
+
+	const handleSelectedRowKeysChange = (selectedRowKeys: React.Key[]) => {
+		setSelectedRowKeys(selectedRowKeys);
+	};
+
+	// 清空选择
+	const clearSelectedRowKeys = () => {
+		setSelectedRowKeys([]);
+	};
+
+	const rowSelection: TableProps<DataType>['rowSelection'] = {
+		selectedRowKeys,
+		onChange: handleSelectedRowKeysChange,
+		type: 'checkbox', //checkbox | radio,
+		fixed: true,
+		// getCheckboxProps // 选择框的默认属性配置
+	};
+
+	const [pageParams, setPageParams] = useState({
+		pageNum: 1,
+		pageSize: 20,
+	});
+
+	const { tableData, loading, total } = useUserList<DataType>(pageParams);
+
+	return (
+		<div>
+			<div ref={ref}>
+				<Table
+					bordered
+					rowKey="id"
+					columns={resColumns}
+					dataSource={tableData}
+					rowSelection={rowSelection}
+					onRow={(record) => ({
+						onClick: () => selectedRow(record),
+					})}
+					scroll={{
+						y: 55 * 10,
+						// x: 'max-content',
+						x: scrollX,
+					}}
+					className={styles.customTable}
+					pagination={{
+						current: pageParams.pageNum,
+						pageSize: pageParams.pageSize,
+						total: total,
+						onChange: (page, size) => {
+							setPageParams({
+								pageNum: page,
+								pageSize: size,
+							});
+						},
+					}}
+					loading={loading}
+				></Table>
+			</div>
+
+			<Button onClick={() => clearSelectedRowKeys()}>清空</Button>
+			{/* <div style={{ height: '300px', overflow: 'auto' }}>
+				<div style={{ height: '800px', background: 'red' }}></div>
+			</div> */}
+		</div>
+	);
 }

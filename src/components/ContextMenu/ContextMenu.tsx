@@ -1,4 +1,3 @@
-import type { TabItem } from '@/store/tabs';
 import { useContextMenu, type ContextMenuState } from './ContextMenuProvider';
 
 export function ContextMenu() {

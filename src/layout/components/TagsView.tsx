@@ -5,7 +5,7 @@ import { ContextMenuTrigger } from '@/components/ContextMenu/ContextMenuTrigger'
 
 export default function TagsView() {
 	const navigate = useNavigate();
-	const { tabs, activeKey, removeTab, setActive, removeOthers } =
+	const { tabs, activeKey, removeTab, setActive, removeOthers, removeRight } =
 		useTabsStore();
 
 	const handleTabClick = (item: TabItem) => {
@@ -28,6 +28,11 @@ export default function TagsView() {
 				key: 'closeOthers',
 				label: '关闭其他',
 				onClick: () => removeOthers(tabKey),
+			},
+			{
+				key: 'closeRight',
+				label: '关闭右边',
+				onClick: () => removeRight(tabKey),
 			},
 		];
 	};

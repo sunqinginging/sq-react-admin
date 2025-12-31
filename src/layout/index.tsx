@@ -12,6 +12,9 @@ import { ThemeSwitcher } from '@/components/ThemeSwitcher';
 import SiderMenu from './components/SiderMneu';
 import TagsView from './components/TagsView';
 import { ContextMenuProvider } from '@/components/ContextMenu/ContextMenuProvider';
+import { useTabsListener } from '@/hooks/useTabsListener';
+import { useGlobalScrollbarStyle } from '@/hooks/useGlobalScrollbarStyle';
+
 function GlobalBreadcrumb() {
 	const matches = useMatches();
 	const crumbs = matches
@@ -30,7 +33,8 @@ function GlobalBreadcrumb() {
 }
 
 const App: React.FC = () => {
-	// useTabsListener();
+	useTabsListener();
+	const { styles } = useGlobalScrollbarStyle();
 
 	const [collapsed, setCollapsed] = useState(false);
 
@@ -49,7 +53,10 @@ const App: React.FC = () => {
 
 	return (
 		<ContextMenuProvider>
-			<Layout style={{ width: '100%', height: '100%' }}>
+			<Layout
+				style={{ width: '100%', height: '100%' }}
+				className={styles.scrollbar}
+			>
 				<Sider trigger={null} collapsible collapsed={collapsed}>
 					<SiderMenu></SiderMenu>
 				</Sider>

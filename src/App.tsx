@@ -50,6 +50,7 @@ function App() {
 
 	// 监听menus的变化
 	useEffect(() => {
+		console.log('你执行了几次啊');
 		if (menus.length > 0) {
 			const resultRouters = createDynamicRouter(menus);
 			setRouter(resultRouters);
@@ -69,6 +70,7 @@ function App() {
 	const colorActive = getComputedStyle(root).getPropertyValue(
 		'--color-primary-active'
 	);
+
 	return (
 		<>
 			<ConfigProvider

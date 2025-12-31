@@ -7,16 +7,16 @@ import NotFound from '@/views/NotFound';
 export function createDynamicRouter(menus: any[]) {
 	// 多级菜单树形结构拍平
 	const flatRoutes = flattenRoutes(menus);
-
+	console.log(flatRoutes);
 	return createBrowserRouter([
 		{
 			path: '/',
 			element: <BasicLayout></BasicLayout>,
 			children: [
-				{
-					index: true, // 默认子路由
-					element: <Navigate to="/dashboard" replace />,
-				},
+				// {
+				// 	index: true, // 默认子路由
+				// 	element: <Navigate to="/dashboard" replace />,
+				// },
 				...flatRoutes,
 			],
 		},

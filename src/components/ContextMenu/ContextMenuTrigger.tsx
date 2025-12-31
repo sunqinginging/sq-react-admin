@@ -14,7 +14,6 @@ export function ContextMenuTrigger<T>({
 	const onContextMenu = (e: React.MouseEvent) => {
 		e.preventDefault();
 		e.stopPropagation();
-		console.log('?????');
 		const items = menu(payload);
 		if (!items.length) return;
 

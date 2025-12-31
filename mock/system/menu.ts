@@ -42,9 +42,7 @@ export default [
 		method: 'get',
 		response: (req: any) => {
 			const auth = req.headers?.authorization;
-			console.log(req);
 			const token = auth?.replace(/^Bearer\s+/i, '');
-			console.log(token);
 			if (!token) {
 				return {
 					code: 401,
@@ -82,7 +80,7 @@ export default [
 								name: '用户管理',
 								type: 'page',
 								component: 'System/User',
-								meta: { keepAlive: true },
+								meta: { keepAlive: true, title: '角色管理' },
 								buttons: [
 									{
 										code: 'add',
@@ -99,7 +97,7 @@ export default [
 								name: '角色管理',
 								type: 'page',
 								component: 'System/Role',
-								meta: { keepAlive: true },
+								meta: { keepAlive: true, title: '角色管理' },
 								// children: [
 								// 	{
 								// 		path: '/system/role/detail/:id',

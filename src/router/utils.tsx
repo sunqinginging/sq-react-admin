@@ -100,7 +100,7 @@ function convert(menu: IMenuItem, parentPath = ''): AppRouteObject | null {
 			element: <Outlet />,
 			children: childrenRoutes,
 			handle: {
-				title: menu.name,
+				title: menu.name || menu.meta?.title,
 				...menu.meta,
 			},
 		};
@@ -111,7 +111,7 @@ function convert(menu: IMenuItem, parentPath = ''): AppRouteObject | null {
 			path: relativePath,
 			element: getComponent(menu),
 			handle: {
-				title: menu.name,
+				title: menu.name || menu.meta?.title,
 				...menu.meta,
 			},
 		};

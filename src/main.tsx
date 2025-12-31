@@ -7,6 +7,8 @@ import App from './App.tsx';
 import { useThemeStore } from './store/theme.ts';
 import dayjs from 'dayjs';
 import 'dayjs/locale/zh-cn';
+import { QueryClientProvider } from '@tanstack/react-query';
+import { queryClient } from '@/utils/queryClient.ts';
 
 dayjs.locale('zh-cn');
 const { primary, setPrimary, mode, setMode } = useThemeStore.getState();
@@ -19,5 +21,7 @@ createRoot(document.getElementById('root')!).render(
 	// <StrictMode>
 	// 	<App></App>
 	// </StrictMode>
-	<App></App>
+	<QueryClientProvider client={queryClient}>
+		<App></App>
+	</QueryClientProvider>
 );
