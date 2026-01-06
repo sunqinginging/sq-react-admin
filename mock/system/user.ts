@@ -53,7 +53,9 @@ export default [
 	{
 		url: '/api/user/add',
 		method: 'post',
-		response: ({ body }) => {
+		timeout: 3500, // 模拟响应延迟，单位是毫秒
+		response: (req: { body: any }) => {
+			const { body } = req;
 			const newUser = {
 				id: Mock.mock('@id'),
 				createTime: Mock.mock('@datetime'),
@@ -63,7 +65,7 @@ export default [
 			userList.unshift(newUser);
 
 			return {
-				code: 0,
+				code: 200,
 				message: '新增成功',
 				data: newUser,
 			};

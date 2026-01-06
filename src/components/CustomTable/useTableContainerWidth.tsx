@@ -8,7 +8,6 @@ export function useTableContainerWidth() {
 			return;
 		}
 		const observer = new ResizeObserver((entries) => {
-			console.log(entries[0].contentRect.width);
 			setWidth(entries[0].contentRect.width);
 		});
 		observer.observe(ref.current);

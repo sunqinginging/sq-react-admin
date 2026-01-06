@@ -15,7 +15,7 @@ import {
 import { AliveScope } from 'react-activation';
 import { PageLoading } from './utils/loading/loading';
 import { staticRoutes } from '@/router/index';
-
+import { ModalProvider } from '@/components/ModalProvider/index';
 function App() {
 	const { mode, primary } = useThemeStore();
 	const { menus, getMenus, setRouter, router, token } = useAuthStore();
@@ -101,16 +101,18 @@ function App() {
 				}}
 			>
 				<AntdApp component={false}>
-					<AntdGlobal></AntdGlobal>
-					<AliveScope>
-						{router ? (
-							<RouterProvider router={router}></RouterProvider>
-						) : (
-							<div>loading</div>
-						)}
-					</AliveScope>
+					<ModalProvider>
+						<AntdGlobal></AntdGlobal>
+						<AliveScope>
+							{router ? (
+								<RouterProvider router={router}></RouterProvider>
+							) : (
+								<div>loading</div>
+							)}
+						</AliveScope>
 
-					{/* <ThemeSwitcher /> */}
+						{/* <ThemeSwitcher /> */}
+					</ModalProvider>
 				</AntdApp>
 			</ConfigProvider>
 		</>

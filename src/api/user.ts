@@ -4,3 +4,7 @@ import http from '@/utils/request';
 export const getUserList = <T = any>(data: any) => {
 	return http.post<PageResult<T>>('/user/list', data);
 };
+
+export const addUser = <T = any>(data: any) => {
+	return http.post<PageResult<T>>('/user/add', data);
+};

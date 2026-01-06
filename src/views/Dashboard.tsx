@@ -15,85 +15,19 @@ import {
 	normalizeColumns,
 } from '@/components/CustomTable/untils';
 import { useTableContainerWidth } from '@/components/CustomTable/useTableContainerWidth';
-import { useUserList } from '@/queryHooks/useUser';
-import { getUserList } from '@/api/user';
+import { useUserList, useAddUser } from '@/queryHooks/useUser';
+import { useModal } from '@/components/ModalProvider/index';
+import { message } from '@/utils/AntdGlobal';
 
 export interface DataType {
 	key: React.Key;
+	id: string;
 	name: string;
 	age: number;
 	email: string;
 	createTime: string;
 	isTotal?: boolean;
 }
-
-const columns: TableColumnsType<DataType> = [
-	{
-		title: '姓名',
-		dataIndex: 'name',
-		width: 120,
-		ellipsis: {
-			showTitle: false,
-		},
-		// render: (value, record) =>
-		// 	record.isTotal ? (
-		// 		<span>总计</span>
-		// 	) : (
-		// 		<Tooltip placement="topLeft" title={value}>
-		// 			{value}
-		// 		</Tooltip>
-		// 	),
-		// onCell: (record) => {
-		// 	if (record.isTotal) {
-		// 		return {
-		// 			colSpan: 2,
-		// 		};
-		// 	}
-		// 	return {};
-		// },
-	},
-	{
-		title: '邮箱',
-		dataIndex: 'email',
-		width: 200,
-		// render: (value) => value,
-		// onCell: (record) => {
-		// 	if (record.isTotal) {
-		// 		return {
-		// 			colSpan: 0,
-		// 		};
-		// 	}
-		// 	return {};
-		// },
-	},
-	{
-		title: '年龄',
-		dataIndex: 'age',
-		width: 300,
-		// render: (value, record) => {
-		// 	return (
-		// 		<span style={{ fontWeight: record.isTotal ? 600 : 400 }}>{value}</span>
-		// 	);
-		// },
-	},
-	{
-		title: '创建日期',
-		dataIndex: 'createTime',
-		width: 300,
-		// render: (value, record) => {
-		// 	return (
-		// 		<span style={{ fontWeight: record.isTotal ? 600 : 400 }}>{value}</span>
-		// 	);
-		// },
-	},
-	{
-		title: '操作',
-		key: 'operate',
-		fixed: 'right',
-		width: 150,
-		render: () => <span>操作</span>,
-	},
-];
 
 const data: DataType[] = [
 	{
@@ -169,9 +103,115 @@ const useStyle = createStyles(({ css, token, prefixCls }) => {
 	};
 });
 
+const AddUser: React.FC<{ close: () => void }> = ({ close }) => {
+	const addUserMutation = useAddUser();
+	console.log(addUserMutation);
+
+	const handleSubmit = async () => {
+		try {
+			await addUserMutation.mutateAsync();
+			message.success('新增用户成功');
+			close();
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	return (
+		<div>
+			模拟form
+			<Button
+				onClick={() => handleSubmit()}
+				loading={addUserMutation.isPending}
+			>
+				提交
+			</Button>
+		</div>
+	);
+};
+
 export default function DashBoard() {
 	const { styles } = useTableScrollbarStyle();
-	console.log(getScrollBarSize());
+	const columns: TableColumnsType<DataType> = [
+		{
+			title: '姓名',
+			dataIndex: 'name',
+			width: 120,
+			ellipsis: {
+				showTitle: false,
+			},
+			// render: (value, record) =>
+			// 	record.isTotal ? (
+			// 		<span>总计</span>
+			// 	) : (
+			// 		<Tooltip placement="topLeft" title={value}>
+			// 			{value}
+			// 		</Tooltip>
+			// 	),
+			// onCell: (record) => {
+			// 	if (record.isTotal) {
+			// 		return {
+			// 			colSpan: 2,
+			// 		};
+			// 	}
+			// 	return {};
+			// },
+		},
+		{
+			title: '邮箱',
+			dataIndex: 'email',
+			width: 200,
+			// render: (value) => value,
+			// onCell: (record) => {
+			// 	if (record.isTotal) {
+			// 		return {
+			// 			colSpan: 0,
+			// 		};
+			// 	}
+			// 	return {};
+			// },
+		},
+		{
+			title: '年龄',
+			dataIndex: 'age',
+			width: 300,
+			// render: (value, record) => {
+			// 	return (
+			// 		<span style={{ fontWeight: record.isTotal ? 600 : 400 }}>{value}</span>
+			// 	);
+			// },
+		},
+		{
+			title: '创建日期',
+			dataIndex: 'createTime',
+			width: 300,
+			// render: (value, record) => {
+			// 	return (
+			// 		<span style={{ fontWeight: record.isTotal ? 600 : 400 }}>{value}</span>
+			// 	);
+			// },
+		},
+		{
+			title: '操作',
+			key: 'operate',
+			fixed: 'right',
+			width: 150,
+			render: () => (
+				<Button type="text" onClick={() => handleAdd()}>
+					编辑
+				</Button>
+			),
+		},
+	];
+
+	const handleAdd = () => {
+		open({
+			title: 'modal只负责ui 将footer的按钮交给content的内容组件',
+			props: {
+				width: '70%',
+			},
+			content: ({ close }) => <AddUser close={close}></AddUser>,
+		});
+	};
 
 	const { ref, width: tableWidth } = useTableContainerWidth();
 	const resColumns = normalizeColumns(columns);
@@ -181,11 +221,11 @@ export default function DashBoard() {
 	const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 	const selectedRow = (record: DataType) => {
 		const selectList = [...selectedRowKeys];
-		const idx = selectList.indexOf(record.key);
+		const idx = selectList.indexOf(record.id);
 		if (idx >= 0) {
 			selectList.splice(idx, 1);
 		} else {
-			selectList.push(record.key);
+			selectList.push(record.id);
 		}
 		setSelectedRowKeys(selectList);
 	};
@@ -213,6 +253,8 @@ export default function DashBoard() {
 	});
 
 	const { tableData, loading, total } = useUserList<DataType>(pageParams);
+
+	const { open } = useModal()!;
 
 	return (
 		<div>
